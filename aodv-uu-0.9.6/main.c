@@ -16,7 +16,7 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * Author: Erik Nordstr�m, <erik.nordstrom@it.uu.se>
+ * Author: Erik Nordström, <erik.nordstrom@it.uu.se>
  *
  *****************************************************************************/
 #include <stdio.h>
@@ -66,9 +66,9 @@ int gw_prefix = 1;
 struct timer worb_timer;	/* Wait on reboot timer */
 
 /* Dynamic configuration values */
-int active_route_timeout = ACTIVE_ROUTE_TIMEOUT_HELLO;
-int ttl_start = TTL_START_HELLO;
-int delete_period = DELETE_PERIOD_HELLO;
+int active_route_timeout = ACTIVE_ROUTE_TIMEOUT_HELLO;        //3000
+int ttl_start = TTL_START_HELLO;           //2
+int delete_period = DELETE_PERIOD_HELLO;    //
 
 static void cleanup();
 
@@ -122,7 +122,7 @@ void usage(int status)
 	 "-R, --rate-limit        Toggle rate limiting of RREQs and RERRs (default ON).\n"
 	 "-q, --quality-threshold Set a minimum signal quality threshold for control packets.\n"
 	 "-V, --version           Show version.\n\n"
-	 "Erik Nordstr�m, <erik.nordstrom@it.uu.se>\n\n",
+	 "Erik Nordström, <erik.nordstrom@it.uu.se>\n\n",
 	 progname, AODV_LOG_PATH, AODV_RT_LOG_PATH);
 
     exit(status);
@@ -159,13 +159,13 @@ int set_kernel_options()
 
     /* Disable ICMP redirects on all interfaces: */
 
-    for (i = 0; i < MAX_NR_INTERFACES; i++) {
-	if (!DEV_NR(i).enabled)
+    for (i = 0; i < MAX_NR_INTERFACES; i++) {   //10
+	if (!DEV_NR(i).enabled)          //1 代表该struct用了
 	    continue;
 
-	memset(command, '\0', 64);
-	sprintf(command, "/proc/sys/net/ipv4/conf/%s/send_redirects",
-		DEV_NR(i).ifname);
+	memset(command, '\0', 64);    //将内存中指定空间设置为某个值
+	sprintf(command, "/proc/sys/net/ipv4/conf/%s/send_redirects",     
+		DEV_NR(i).ifname);    //char数组
 	if ((fd = open(command, O_WRONLY)) < 0)
 	    return -1;
 	if (write(fd, &off, sizeof(char)) < 0)
@@ -592,7 +592,7 @@ int main(int argc, char **argv)
 	    break;
 	case 'V':
 	    printf
-		("\nAODV-UU v%s, %s � Uppsala University & Ericsson AB.\nAuthor: Erik Nordstr�m, <erik.nordstrom@it.uu.se>\n\n",
+		("\nAODV-UU v%s, %s © Uppsala University & Ericsson AB.\nAuthor: Erik Nordström, <erik.nordstrom@it.uu.se>\n\n",
 		 AODV_UU_VERSION, DRAFT_VERSION);
 	    exit(0);
 	    break;
