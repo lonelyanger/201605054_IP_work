@@ -16,12 +16,12 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * Authors: Erik Nordstr�m, <erik.nordstrom@it.uu.se>
+ * Authors: Erik Nordström, <erik.nordstrom@it.uu.se>
  *          
  *
  *****************************************************************************/
 
-#ifdef NS_PORT
+#ifdef NS_PORT         //防止重复定义
 #include "ns-2/aodv-uu.h"
 #else
 #include <netinet/in.h>
