@@ -480,28 +480,28 @@ void signal_handler(int type)
 
 int main(int argc, char **argv)
 {
-    static char *ifname = NULL;	/* Name of interface to attach to */
+    static char *ifname = NULL;	/* Name of interface to attach to *//*要连接到的接口的名称*/
     fd_set rfds, readers;
     int n, nfds = 0, i;
     int daemonize = 0;
     struct timeval *timeout;
     struct timespec timeout_spec;
-    struct sigaction sigact;
+    struct sigaction sigact;										/*<signal.h>中*/
     sigset_t mask, origmask;
 
     /* Remember the name of the executable... */
-    progname = strrchr(argv[0], '/');
+    progname = strrchr(argv[0], '/');                                  /*返回最后一次出现‘/’的位置*/
 
     if (progname)
-	progname++;
+	progname++;					
     else
 	progname = argv[0];
 
     /* Use debug output as default */
     debug = 1;
 
-    memset (&sigact, 0, sizeof(struct sigaction));
-    sigact.sa_handler = signal_handler;
+    memset (&sigact, 0, sizeof(struct sigaction));                     /*为新申请的内存做初始化工作，全置0*/
+    sigact.sa_handler = signal_handler;                                /*函数重定义*/
         
     /* This server should shut down on these signals. */
     sigaction(SIGTERM, &sigact, 0);
@@ -521,10 +521,10 @@ int main(int argc, char **argv)
     sigprocmask(SIG_BLOCK, &mask, &origmask);
 
     /* Parse command line: */
-    while (1) {
+    while (1) {                                                                         /*把命令参数读出并执行完*/
 	int opt;
 
-	opt = getopt_long(argc, argv, "i:fjln:dghoq:r:s:uwxDLRV", longopts, 0);
+	opt = getopt_long(argc, argv, "i:fjln:dghoq:r:s:uwxDLRV", longopts, 0);            /*从参数中在给定值域当中寻找操作符*/
 
 	if (opt == EOF)
 	    break;
