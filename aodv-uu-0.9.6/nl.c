@@ -54,8 +54,7 @@ struct nlsock {
 	struct sockaddr_nl local;
 };
 
-struct sockaddr_nl peer = { AF_NETLINK, 0, 0, 0 };
-
+struct sockaddr_nl peer = { AF_NETLINK, 0, 0, 0 }; //系统内核提供
 struct nlsock aodvnl;
 struct nlsock rtnl;
 
@@ -162,12 +161,12 @@ void nl_cleanup(void)
 static void nl_kaodv_callback(int sock)
 {
 	int len;
-	socklen_t addrlen;
-	struct nlmsghdr *nlm;
-	struct nlmsgerr *nlmerr;
+	socklen_t addrlen;   //u_int
+	struct nlmsghdr *nlm;    //用于接收来自应用层的数据包
+	struct nlmsgerr *nlmerr;    //携带错误消息
 	char buf[BUFLEN];
-	struct in_addr dest_addr, src_addr;
-	kaodv_rt_msg_t *m;
+	struct in_addr dest_addr, src_addr;   //存ip地址
+	kaodv_rt_msg_t *m;    //存路由信息
 	rt_table_t *rt, *fwd_rt, *rev_rt = NULL;
 
 	addrlen = sizeof(struct sockaddr_nl);
@@ -182,7 +181,7 @@ static void nl_kaodv_callback(int sock)
 	nlm = (struct nlmsghdr *) buf;
 
 	switch (nlm->nlmsg_type) {
-	case NLMSG_ERROR:
+	case NLMSG_ERROR:   //出错丢弃？
 		nlmerr = NLMSG_DATA(nlm);
 		if (nlmerr->error == 0) {
 		/* 	DEBUG(LOG_DEBUG, 0, "NLMSG_ACK"); */
@@ -193,10 +192,10 @@ static void nl_kaodv_callback(int sock)
 		}
 		break;
 
-	case KAODVM_DEBUG:
+	case KAODVM_DEBUG:   
 		DEBUG(LOG_DEBUG, 0, "kaodv: %s", NLMSG_DATA(nlm));
 		break;
-       	case KAODVM_TIMEOUT:
+       	case KAODVM_TIMEOUT: //超时在路由表中去掉这个路由表项
 		m = NLMSG_DATA(nlm);
 		dest_addr.s_addr = m->dst;
 
@@ -212,7 +211,7 @@ static void nl_kaodv_callback(int sock)
 			DEBUG(LOG_DEBUG, 0,
 			      "Got rt timeoute event but there is no route");
 		break;
-	case KAODVM_ROUTE_REQ:
+	case KAODVM_ROUTE_REQ: //
 		m = NLMSG_DATA(nlm);
 		dest_addr.s_addr = m->dst;
 
