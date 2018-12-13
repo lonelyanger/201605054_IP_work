@@ -313,7 +313,7 @@ static void nl_rt_callback(int sock)
 	socklen_t addrlen;
 	struct nlmsghdr *nlm;
 	struct nlmsgerr *nlmerr;
-	char buf[BUFLEN];
+	char buf[BUFLEN];    //256
 	struct ifaddrmsg *ifm;
 	struct rtattr *rta;
 
