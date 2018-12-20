@@ -158,7 +158,7 @@ void nl_cleanup(void)
 }
 
 
-static void nl_kaodv_callback(int sock)
+static void nl_kaodv_callback(int sock)   //由内核套接字执行的回调函数
 {
 	int len;
 	socklen_t addrlen;   //u_int
@@ -253,7 +253,7 @@ static void nl_kaodv_callback(int sock)
 		rt_table_update_route_timeouts(fwd_rt, rev_rt);
 
 		break;
-	case KAODVM_SEND_RERR:
+	case KAODVM_SEND_RERR:   //收到rerr消息
 		m = NLMSG_DATA(nlm);
 		dest_addr.s_addr = m->dst;
 		src_addr.s_addr = m->src;
@@ -306,7 +306,7 @@ static void nl_kaodv_callback(int sock)
 	}
 
 }
-static void nl_rt_callback(int sock)
+static void nl_rt_callback(int sock)    //收到路由消息
 {
 	int len, attrlen;
 	socklen_t addrlen;
@@ -368,7 +368,7 @@ static void nl_rt_callback(int sock)
 	return;
 }
 
-int prefix_length(int family, void *nm)
+int prefix_length(int family, void *nm)     //计算子网掩码的前缀长度
 {
 	int prefix = 0;
 
@@ -408,7 +408,7 @@ int addattr(struct nlmsghdr *n, int type, void *data, int alen)
 
 #define ATTR_BUFLEN 512
 
-int nl_send(struct nlsock *nl, struct nlmsghdr *n)
+int nl_send(struct nlsock *nl, struct nlmsghdr *n)   //数据发送给内核模块
 {
 	int res;
 	struct iovec iov = { (void *) n, n->nlmsg_len };
@@ -439,7 +439,7 @@ int nl_send(struct nlsock *nl, struct nlmsghdr *n)
  * table */
 int nl_kern_route(int action, int flags, int family,
 		  int index, struct in_addr *dst, struct in_addr *gw,
-		  struct in_addr *nm, int metric)
+		  struct in_addr *nm, int metric)    //内核路由表的增删改查
 {
 	struct {
 		struct nlmsghdr nlh;
@@ -487,7 +487,7 @@ int nl_kern_route(int action, int flags, int family,
 
 int nl_send_add_route_msg(struct in_addr dest, struct in_addr next_hop,
 			  int metric, u_int32_t lifetime, int rt_flags,
-			  int ifindex)
+			  int ifindex)   //给内核发送一条添加路由信息的消息
 {
 	struct {
 		struct nlmsghdr n;
@@ -526,7 +526,7 @@ int nl_send_add_route_msg(struct in_addr dest, struct in_addr next_hop,
 			     AF_INET, ifindex, &dest, &next_hop, NULL, metric);
 }
 
-int nl_send_no_route_found_msg(struct in_addr dest)
+int nl_send_no_route_found_msg(struct in_addr dest)  //发送一条消息表示到改目的地的路由信息无法找到
 {
 	struct {
 		struct nlmsghdr n;
@@ -547,7 +547,7 @@ int nl_send_no_route_found_msg(struct in_addr dest)
 	return nl_send(&aodvnl, &areq.n);
 }
 
-int nl_send_del_route_msg(struct in_addr dest, struct in_addr next_hop, int metric)
+int nl_send_del_route_msg(struct in_addr dest, struct in_addr next_hop, int metric)     //删除一条路由记录
 {
 	int index = -1;
 	struct {
@@ -579,7 +579,7 @@ int nl_send_del_route_msg(struct in_addr dest, struct in_addr next_hop, int metr
 			     NULL, metric);
 }
 
-int nl_send_conf_msg(void)
+int nl_send_conf_msg(void)     //
 {
 	struct {
 		struct nlmsghdr n;
